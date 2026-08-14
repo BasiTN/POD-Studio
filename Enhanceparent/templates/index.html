@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POD Studio Pro</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background: #1e293b; border-bottom: 1px solid #334155; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 1.25rem; font-weight: 700; color: #818cf8; }
+
+        .nav-tabs { display: flex; gap: 8px; }
+        .nav-btn { background: #0f172a; border: 1px solid #334155; color: #94a3b8; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .nav-btn:hover { color: #f8fafc; border-color: #6366f1; }
+        .nav-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+        main { flex: 1; padding: 2.5rem; max-width: 1400px; width: 100%; margin: 0 auto; }
+        
+        .workspace-panel { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 2.5rem; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
+        .workspace-panel.active { display: block; }
+
+        .panel-header { margin-bottom: 2rem; border-bottom: 1px solid #334155; padding-bottom: 1rem; }
+        .panel-header h2 { font-size: 1.5rem; color: #f8fafc; }
+        .panel-header p { color: #94a3b8; font-size: 0.9rem; margin-top: 4px; }
+
+        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 900px) { .tool-grid { grid-template-columns: 1fr; } }
+
+        .upload-dropzone { border: 2px dashed #475569; border-radius: 12px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: 0.2s; background: #0f172a; }
+        .upload-dropzone:hover { border-color: #6366f1; background: #1e1b4b; }
+        input[type="file"] { display: none; }
+        .file-display { color: #818cf8; font-weight: 600; margin-top: 8px; font-size: 0.9rem; }
+
+        .controls-group { display: flex; flex-direction: column; gap: 1rem; justify-content: center; }
+        .options-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .toggle-btn { flex: 1; min-width: 130px; padding: 0.85rem; border: 1px solid #334155; border-radius: 10px; background: #0f172a; color: #94a3b8; text-align: center; cursor: pointer; user-select: none; font-size: 0.85rem; }
+        .toggle-btn input { display: none; }
+        .toggle-btn:has(input:checked) { border-color: #6366f1; background: #312e81; color: #818cf8; font-weight: 600; }
+
+        button.primary-btn { background: #6366f1; color: white; border: none; padding: 1rem 2rem; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 1rem; }
+        button.primary-btn:hover { background: #4f46e5; }
+
+        .status-bar { margin-top: 1.5rem; padding: 1rem; border-radius: 8px; background: #0f172a; text-align: center; font-size: 0.9rem; color: #94a3b8; }
+
+        /* MOCKUP & PINTEREST RESULTS STYLING */
+        .mockup-results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .mockup-results-grid img { width: 100%; border-radius: 12px; border: 1px solid #334155; }
+
+        .seo-box { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 1rem; margin-top: 1rem; }
+        .seo-box h4 { color: #818cf8; margin-bottom: 6px; font-size: 0.95rem; }
+        .seo-box p, .seo-box ul { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; }
+        .seo-box ul { list-style: none; }
+        .seo-box li { margin-bottom: 6px; padding-left: 12px; border-left: 2px solid #6366f1; }
+        .hashtag-pill { display: inline-block; background: #1e1b4b; color: #818cf8; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; margin: 3px; border: 1px solid #312e81; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">✨ POD Studio Pro</div>
+        <nav class="nav-tabs">
+            <button class="nav-btn active" onclick="setTab(0)">✨ Graphic Enhancer</button>
+            <button class="nav-btn" onclick="setTab(1)">🎨 Color Variant</button>
+            <button class="nav-btn" onclick="setTab(2)">👗 AI Female Mockups</button>
+            <button class="nav-btn" onclick="setTab(3)">📌 Pinterest SEO Studio</button>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- TOOL 1: UNIFIED GRAPHIC ENHANCER -->
+        <div class="workspace-panel active">
+            <div class="panel-header">
+                <h2>Graphic Enhancer & Canvas Scaler</h2>
+                <p>Toggle transparency removal, 4x upscaling, or standard 300 DPI canvas scaling as needed.</p>
+            </div>
+            <form onsubmit="executeFileDownload(event, '/process-enhancer', this)">
+                <div class="tool-grid">
+                    <div class="upload-dropzone" onclick="this.querySelector('input').click()">
+                        <div>📂 Drop graphic here or click to upload</div>
+                        <div class="file-display"></div>
+                        <input type="file" name="file" required onchange="showFilename(this)">
+                    </div>
+                    <div class="controls-group">
+                        <div class="options-row">
+                            <label class="toggle-btn"><input type="checkbox" name="transparency" value="true" checked>✨ Remove White BG</label>
+                            <label class="toggle-btn"><input type="checkbox" name="enhancement" value="true" checked>🔍 4x Enhance</label>
+                            <label class="toggle-btn"><input type="checkbox" name="dpiscale" value="true">📐 300 DPI Canvas</label>
+                        </div>
+                        <button type="submit" class="primary-btn">Process & Download PNG</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- TOOL 2: COLOR VARIANT GENERATOR -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <h2>Color Variant Generator</h2>
+                <p>Recolor dark text/graphics into solid white, gold, or bright colors for dark garments.</p>
+            </div>
+            <form onsubmit="executeFileDownload(event, '/process-colorvariant', this)">
+                <div class="tool-grid">
+                    <div class="upload-dropzone" onclick="this.querySelector('input').click()">
+                        <div>📂 Select isolated graphic</div>
+                        <div class="file-display"></div>
+                        <input type="file" name="file" required onchange="showFilename(this)">
+                    </div>
+                    <div class="controls-group">
+                        <label style="color:#94a3b8;">Choose Target Color:</label>
+                        <input type="color" name="color" value="#FFFFFF" style="width:100%; height:45px; border:none; border-radius:8px; cursor:pointer;">
+                        <button type="submit" class="primary-btn">Generate Recolored PNG</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- TOOL 3: AI FEMALE MOCKUP PROMPT STUDIO -->
+<div class="workspace-panel">
+    <div class="panel-header">
+        <h2>✨ AI Female Mockup Prompt Studio</h2>
+        <p>Upload your shirt design. AI will analyze its vibe and generate 4 ultra-realistic female model mockup prompts tailored for free AI generators (Bing Image Creator, Leonardo, Flux).</p>
+    </div>
+    <form onsubmit="generateMockupPrompts(event, this)">
+        <div class="tool-grid">
+            <div class="upload-dropzone" onclick="this.querySelector('input').click()">
+                <div>📂 Upload T-Shirt Graphic</div>
+                <div class="file-display"></div>
+                <input type="file" name="file" required onchange="showFilename(this)">
+            </div>
+            <div class="controls-group">
+                <p style="color:#94a3b8; font-size:0.9rem;">Targets female audience with context-aware scenes (park, library, cafe, gathering).</p>
+                <button type="submit" class="primary-btn">Generate 4 Mockup Prompts</button>
+            </div>
+        </div>
+    </form>
+    <div id="mockupPromptContainer" style="margin-top:20px; display:none;">
+        <div class="seo-box" style="margin-bottom:15px;">
+            <h4>🎨 Vibe & Style Analysis:</h4>
+            <p id="vibeAnalysisText"></p>
+        </div>
+        <div id="mockupCardsGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;"></div>
+    </div>
+</div>
+
+        <!-- TOOL 4: AI PINTEREST SEO ANALYZER -->
+<div class="workspace-panel">
+    <div class="panel-header">
+        <h2>📌 AI Pinterest SEO Studio</h2>
+        <p>Paste an e-commerce product link (Etsy, Amazon, AliExpress) OR upload an image to generate SEO titles, descriptions with embedded hashtags, and Alt Text.</p>
+    </div>
+    
+    <form onsubmit="generatePinterestSEO(event, this)">
+        <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:20px;">
+            <!-- URL Input Option -->
+            <div>
+                <label style="color:#cbd5e1; font-weight:600; display:block; margin-bottom:6px;">Option 1: Paste E-Commerce Product URL</label>
+                <input type="url" name="url" placeholder="https://www.etsy.com/listing/... or https://www.amazon.com/dp/..." style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:white;">
+            </div>
+
+            <div style="text-align:center; color:#64748b; font-weight:bold;">— OR —</div>
+
+            <!-- File Upload Option -->
+            <div>
+                <label style="color:#cbd5e1; font-weight:600; display:block; margin-bottom:6px;">Option 2: Upload Product Image</label>
+                <div class="upload-dropzone" onclick="this.querySelector('input').click()">
+                    <div>📂 Upload Image File</div>
+                    <div class="file-display"></div>
+                    <input type="file" name="file" onchange="showFilename(this)">
+                </div>
+            </div>
+
+            <button type="submit" class="primary-btn" style="margin-top:10px;">Generate Pinterest SEO Pack</button>
+        </div>
+    </form>
+
+    <div id="pinterestResultContainer" style="display:none; margin-top:20px;">
+        <!-- Titles Output -->
+        <div class="seo-box" style="margin-bottom:15px;">
+            <h4>📌 SEO Titles (Choose 1):</h4>
+            <ul id="pinterestTitlesList" style="padding-left:20px; color:#e2e8f0;"></ul>
+        </div>
+
+        <!-- Description with Embedded Hashtags Output -->
+        <div class="seo-box" style="margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h4 style="margin:0;">📝 Description & Embedded Hashtags:</h4>
+                <button onclick="copyElementText('pinterestDescText', this)" style="background:#6366f1; color:white; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">Copy Description</button>
+            </div>
+            <p id="pinterestDescText" style="white-space: pre-wrap; font-size:0.9rem; color:#cbd5e1; background:#0f172a; padding:12px; border-radius:6px; border:1px solid #334155;"></p>
+        </div>
+
+        <!-- Alt Text Output -->
+        <div class="seo-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h4 style="margin:0;">♿ Pinterest Alt Text:</h4>
+                <button onclick="copyElementText('pinterestAltText', this)" style="background:#6366f1; color:white; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">Copy Alt Text</button>
+            </div>
+            <p id="pinterestAltText" style="font-size:0.85rem; color:#cbd5e1; background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155;"></p>
+        </div>
+    </div>
+</div>
+
+        <div class="status-bar" id="statusText">Created By Basit Afridi</div>
+    </main>
+
+    <script>
+        function setTab(idx) {
+            document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+            document.querySelectorAll('.workspace-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+            document.getElementById('statusText').textContent = 'Created By Basit Afridi';
+        }
+
+        function showFilename(input) {
+            if (input.files.length) {
+                input.parentElement.querySelector('.file-display').textContent = 'Selected: ' + input.files[0].name;
+            }
+        }
+
+        async function executeFileDownload(e, endpoint, form) {
+            e.preventDefault();
+            const status = document.getElementById('statusText');
+            status.textContent = 'Processing request... Please wait.';
+
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch(endpoint, { method: 'POST', body: formData });
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'output_graphic.png';
+                    a.click();
+                    status.textContent = 'Success! File downloaded.';
+                } else {
+                    status.textContent = 'Error processing file.';
+                }
+            } catch (err) {
+                status.textContent = 'An error occurred during execution.';
+            }
+        }
+
+        async function generateMockupPrompts(e, form) {
+    e.preventDefault();
+    const status = document.getElementById('statusText');
+    status.textContent = 'Analyzing design vibe & crafting 4 female mockup prompts...';
+
+    const container = document.getElementById('mockupPromptContainer');
+    const vibeText = document.getElementById('vibeAnalysisText');
+    const grid = document.getElementById('mockupCardsGrid');
+    container.style.display = 'none';
+    grid.innerHTML = '';
+
+    try {
+        const res = await fetch('/process-mockup', { method: 'POST', body: new FormData(form) });
+        const data = await res.json();
+
+        if (res.ok) {
+            vibeText.textContent = data.vibe_analysis;
+
+            data.mockups.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'seo-box';
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <h4 style="margin:0;">📸 Scene ${index + 1}: ${item.setting}</h4>
+                        <button onclick="copyToClipboard('${item.prompt.replace(/'/g, "\\'")}', this)" style="background:#6366f1; color:white; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">Copy Prompt</button>
+                    </div>
+                    <p style="font-size:0.85rem; color:#cbd5e1; background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155;">${item.prompt}</p>
+                `;
+                grid.appendChild(card);
+            });
+
+            container.style.display = 'block';
+            status.textContent = '4 Female Mockup Prompts Generated!';
+        } else {
+            status.textContent = 'Error: ' + data.error;
+        }
+    } catch (err) {
+        status.textContent = 'Error generating prompts.';
+    }
+}
+
+function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text);
+    const origText = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#22c55e';
+    setTimeout(() => {
+        btn.textContent = origText;
+        btn.style.background = '#6366f1';
+    }, 2000);
+}
+
+        async function generatePinterestSEO(e, form) {
+    e.preventDefault();
+    const status = document.getElementById('statusText');
+    status.textContent = 'Analyzing product details & generating Pinterest SEO...';
+
+    const container = document.getElementById('pinterestResultContainer');
+    const titlesList = document.getElementById('pinterestTitlesList');
+    const descText = document.getElementById('pinterestDescText');
+    const altText = document.getElementById('pinterestAltText');
+
+    container.style.display = 'none';
+    titlesList.innerHTML = '';
+
+    try {
+        const formData = new FormData(form);
+        const res = await fetch('/process-pinterest-seo', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (res.ok) {
+            // Render 3 Titles
+            data.titles.forEach(title => {
+                const li = document.createElement('li');
+                li.textContent = title;
+                li.style.marginBottom = '6px';
+                titlesList.appendChild(li);
+            });
+
+            // Render Description (hashtags are automatically at the bottom)
+            descText.textContent = data.description;
+
+            // Render Alt Text
+            altText.textContent = data.alt_text;
+
+            container.style.display = 'block';
+            status.textContent = 'Pinterest SEO Pack Generated!';
+        } else {
+            status.textContent = 'Error: ' + data.error;
+        }
+    } catch (err) {
+        status.textContent = 'Error processing Pinterest SEO request.';
+    }
+}
+
+function copyElementText(elementId, btn) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text);
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#22c55e';
+    setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.background = '#6366f1';
+    }, 2000);
+}
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+Flask
+google-genai
+Pillow
+requests
+beautifulsoup4
+gunicorn
